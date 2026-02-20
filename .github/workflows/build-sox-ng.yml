@@ -95,8 +95,14 @@ jobs:
         CC=musl-gcc
 
     - name: Build FLAC
+      if: contains(matrix.target, 'musl') == false
       working-directory: flac-${{ steps.flac.outputs.version }}
       run: make -j${{ steps.cpu.outputs.jobs }} && make install
+
+    - name: Build FLAC (musl)
+      if: contains(matrix.target, 'musl')
+      working-directory: flac-${{ steps.flac.outputs.version }}
+      run: make AM_LDFLAGS="-all-static" -j${{ steps.cpu.outputs.jobs }} && make install
 
     - name: Download sox_ng
       run: curl -fSL "https://codeberg.org/sox_ng/sox_ng/releases/download/sox_ng-${{ steps.sox_ng.outputs.version }}/sox_ng-${{ steps.sox_ng.outputs.version }}.tar.gz" | tar xz
@@ -131,12 +137,24 @@ jobs:
         PKG_CONFIG_PATH: ${{ github.workspace }}/dist/lib/pkgconfig
 
     - name: Build sox_ng
+      if: contains(matrix.target, 'musl') == false
       working-directory: sox_ng-${{ steps.sox_ng.outputs.version }}
       run: make -j${{ steps.cpu.outputs.jobs }} && make install
+
+    - name: Build sox_ng (musl)
+      if: contains(matrix.target, 'musl')
+      working-directory: sox_ng-${{ steps.sox_ng.outputs.version }}
+      run: make AM_LDFLAGS="-all-static" -j${{ steps.cpu.outputs.jobs }} && make install
 
     - run: ./dist/bin/flac --version
 
     - run: ./dist/bin/sox_ng --version
+
+    - name: Verify static linking (musl)
+      if: contains(matrix.target, 'musl')
+      run: |
+        file ./dist/bin/flac | tee /dev/stderr | grep -q 'statically linked'
+        file ./dist/bin/sox_ng | tee /dev/stderr | grep -q 'statically linked'
 
     - name: Package binaries
       run: >
