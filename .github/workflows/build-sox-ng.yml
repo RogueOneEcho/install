@@ -168,7 +168,7 @@ jobs:
       run: >
         gh release create
         "sox_ng-${{ inputs.sox_ng_version }}-flac-${{ inputs.flac_version }}"
-        --title "sox_ng ${{ inputs.sox_ng_version }} (FLAC ${{ inputs.flac_version }})"
+        --title "sox_ng-${{ inputs.sox_ng_version }}-flac-${{ inputs.flac_version }}"
         --notes "Built sox_ng ${{ inputs.sox_ng_version }} against FLAC ${{ inputs.flac_version }}"
         --target ${{ github.ref_name }}
 
