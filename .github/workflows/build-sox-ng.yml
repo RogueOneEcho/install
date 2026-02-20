@@ -68,7 +68,7 @@ jobs:
       run: sudo apt-get install -y musl-tools
 
     - if: contains(matrix.os, 'macos')
-      run: brew install autoconf automake libtool libogg libpng fftw
+      run: brew install --quiet autoconf automake libtool libogg libpng fftw
 
     - name: Download FLAC
       run: curl -fSL "https://downloads.xiph.org/releases/flac/flac-${{ steps.flac.outputs.version }}.tar.xz" | tar xJ
