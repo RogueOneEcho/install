@@ -60,6 +60,10 @@ case "$os" in
   Darwin)
     case "$arch" in
       arm64) arch="aarch64" ;;
+      *)
+        log_error "Intel macOS is not supported"
+        exit 1
+        ;;
     esac
     target="${arch}-apple-darwin"
     ;;
